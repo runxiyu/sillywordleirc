@@ -20,7 +20,7 @@ def check_guess(guess, answer):
     return "".join(res)
 
 
-def game(chosen_word, allowed_words):
+def game(chosen_word, allowed_guesses):
     alry_gsd = []
     acm_res = []
 
@@ -33,7 +33,7 @@ def game(chosen_word, allowed_words):
                     "%s is not a valid guess because it has already been res."
                     % guess
                 )
-            elif guess not in allowed_words:
+            elif guess not in allowed_guesses:
                 print("%s is not in the dictionary." % guess)
             else:
                 break
@@ -51,13 +51,15 @@ def game(chosen_word, allowed_words):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("You must and must only give one argument, that is, the filename of the word list.")
+    if len(sys.argv) != 3:
+        print("You must and must only give two arguments, that is, the filename of the solution list, followed by that of the allowed guesses list.")
         sys.exit(1)
     try:
-        allowed_words = [w.strip().upper() for w in open(sys.argv[1], "r").readlines()]
+        allowed_solutions = [w.strip().upper() for w in open(sys.argv[1], "r").readlines()]
+        allowed_guesses = set([w.strip().upper() for w in open(sys.argv[2], "r").readlines()])
+        allowed_guesses = allowed_guesses | set(allowed_solutions)
     except FileNotFoundError:
         print("%s does not exist, so I can't open the word list!" % sys.argv[1])
         sys.exit(2)
-    chosen_word = choice(allowed_words)
-    game(chosen_word, allowed_words)
+    chosen_word = choice(allowed_solutions)
+    game(chosen_word, allowed_guesses)
